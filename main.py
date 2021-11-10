@@ -232,7 +232,7 @@ class CreatProj(QWidget):
         conn = engine.connect()
 
         s = select([Users]).where(
-            Users.c.login == self.pr_name.text()
+            Projects.c.name == self.pr_name.text()
         )
         r = conn.execute(s)
         if not r.first():
@@ -255,7 +255,7 @@ class CreatProj(QWidget):
     def go_back(self):
         # переход в виджет входа
         self.hide()
-        self.out_login = MainPages()
+        self.out_login = MainPages(self.username)
         self.out_login.show()
 
 
@@ -470,7 +470,9 @@ class MainPages(QWidget):
         conn = engine.connect()
         s = select([Users]).where(Users.c.login == username)
         r = conn.execute(s)
-        account_id = r.first()[-1]
+        userr = r.first()
+        account_id = userr[-1]
+        self.user_id = userr[0]
         self.account_id = account_id
         s = select([Accounts]).where(Accounts.c.id == account_id)
         r = conn.execute(s)
@@ -501,7 +503,7 @@ class MainPages(QWidget):
     def go_project(self):
         conn = engine.connect()
         r = conn.execute(select([Projects]).where(
-            Projects.c.User == self.account_id
+            Projects.c.User == self.user_id
         ))
         project_r = r.first()
         if project_r:
@@ -509,7 +511,7 @@ class MainPages(QWidget):
             self.hide()
             self.out_proj.show()
         else:
-            self.out_creat_proj = CreatProj(self.name, self.account_id)
+            self.out_creat_proj = CreatProj(self.name, self.user_id)
             self.hide()
             self.out_creat_proj.show()
 
