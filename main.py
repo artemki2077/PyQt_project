@@ -13,15 +13,13 @@ from PyQt5.QtWidgets import QLineEdit, QWidget, QApplication, QPushButton, \
 metadata = MetaData()
 
 engine = create_engine(
-    "postgresql+psycopg2://egerxqhtcwcnti:c2de0ab971d2e36317f9ab03d097191edd79d154f032d86efdce83e6f56232b7@ec2-52-208"
-    "-221-89.eu-west-1.compute.amazonaws.com:5432/dagdtfhhmkkc6u")  # подключение к бд
+    "postgresql+psycopg2://vwkpsapgezatjo:0707b3f5b76e2dcc9cb997d24e99eaa3332d7b160736f6ae6f56456ec103aa0e@ec2-52-213-119-221.eu-west-1.compute.amazonaws.com:5432/dbfhqn219nh3ea")  # подключение к бд
 
 # Ниже объекты для управления базой данных и каждый отвечает за свою таблицу
 
 Accounts = Table("Accounts", metadata,
                  Column('id', Integer(), primary_key=True),
-                 Column('balance', Integer(), nullable=False),
-                 )
+                 Column('balance', Integer(), nullable=False),)
 
 Users = Table("Users", metadata,
               Column('id', Integer(), primary_key=True),
@@ -53,6 +51,11 @@ Projects = Table("Projects", metadata,
                  Column("account_id", Integer(), ForeignKey('Accounts.id'),
                         nullable=False),
                  )
+
+Skins = Table("Skins", metadata,
+              Column("id", Integer(), primary_key=True),
+              Column("skin_Name", String(100), nullable=False),
+              Column("user_id", Integer(),  ForeignKey('Users.id'), nullable=False))
 
 metadata.create_all(engine)
 
@@ -243,8 +246,7 @@ class CreatProj(QWidget):
                                           password=str(sha256(self.password.text()
                                                               .encode('utf-8'))
                                                        .hexdigest()),
-                                          User=self.account_id,
-                                          account_id=account_id)
+                                          User=self.account_id, account_id=account_id)
             conn.execute(ins)
             self.hide()
             self.out_main = ProjPage(self.username, self.pr_name.text())
