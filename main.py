@@ -177,7 +177,7 @@ class SingUp(QWidget):
         )
         r = conn.execute(s)
         if not r.first():
-            ins = insert(Accounts).values(balance=0)
+            ins = insert(Accounts).values(balance=10000)
             r = conn.execute(ins)
             account_id = r.inserted_primary_key[0]
             ins = insert(Users).values(login=self.username.text(),
